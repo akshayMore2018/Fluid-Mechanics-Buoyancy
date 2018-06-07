@@ -1,8 +1,7 @@
 package com.mygdx.game;
 
 
-class FrozenEnemy implements Behavior
-{
+class FrozenEnemy implements Behavior {
     private Enemy enemy;
     private float waterLevel;
     private float objectHeight;
@@ -21,15 +20,13 @@ class FrozenEnemy implements Behavior
     private float incrementAngle;
 
     @Override
-    public void init(Enemy enemy)
-    {
+    public void init(Enemy enemy) {
         this.enemy = enemy;
         isPlayerOnTop = false;
         initForces();
     }
 
-    private void initForces()
-    {
+    private void initForces() {
         waterLevel = enemy.currentWater.top;
         objectHeight = enemy.collision.getHeight();
         enemy.velocity.y = 4;
@@ -41,32 +38,22 @@ class FrozenEnemy implements Behavior
         incrementAngle = 1.8f;
     }
 
-    private float volumeSubmerged()
-    {
+    private float volumeSubmerged() {
         float partSubmerged;
-        if (enemy.top >= waterLevel)
-        {
+        if (enemy.top >= waterLevel) {
             partSubmerged = objectHeight;
-        }
-        else if (enemy.bottom < waterLevel)
-        {
+        } else if (enemy.bottom < waterLevel) {
             partSubmerged = 0;
-        }
-        else
-        {
+        } else {
             partSubmerged = enemy.bottom - waterLevel;
         }
         return partSubmerged;
     }
 
-    private void fluidMechanics()
-    {
-        if (enemy.position.y <= waterLevel)
-        {
+    private void fluidMechanics() {
+        if (enemy.position.y <= waterLevel) {
             damping = 0.5f;  //damping applied to slow down floating(up-down motion) at surface.
-        }
-        else if (enemy.top >= waterLevel)
-        {
+        } else if (enemy.top >= waterLevel) {
             damping = 1;   //damping=1, does not have any effect, let the object move up due to buoyancy.
         }
         enemy.velocity.y += weightForce + buoyantForce; //net acceleration due to opposing forces.
@@ -78,8 +65,7 @@ class FrozenEnemy implements Behavior
         horizontalMotion(enemy.position, 1, incrementAngle);
     }
 
-    private void horizontalMotion(Vector2 centre, float radiusX, float incrementAngle)
-    {
+    private void horizontalMotion(Vector2 centre, float radiusX, float incrementAngle) {
         //giving a wobble effect while the cube moves up.
         enemy.velocity.x = Utility.getCos(enemy.movementAngle);
         enemy.position.x = centre.x + enemy.velocity.x * radiusX;
@@ -87,12 +73,10 @@ class FrozenEnemy implements Behavior
     }
 
     @Override
-    public void execute()
-    {
+    public void execute() {
         fluidMechanics();
 
-        if (Player.currentState.ID == PlayerStateJump.getInstance().ID)
-        {
+        if (Player.currentState.ID == PlayerStateJump.getInstance().ID) {
             //The floating frozen enemy is pushed down a bit when player lands on it.
             //This should only happen when player jumps on the floating frozen enemy.
             isPlayerOnTop = false;
@@ -100,22 +84,17 @@ class FrozenEnemy implements Behavior
     }
 
     @Override
-    public void reset()
-    {
+    public void reset() {
         isPlayerOnTop = false;
-        if (!enemy.isWaterEnemy)
-        {
-           enemy.die();
+        if (!enemy.isWaterEnemy) {
+            enemy.die();
         }
     }
 
     @Override
-    public void onCollision(GameObject gameObject)
-    {
-        if (gameObject.name == "player")
-        {
-            if (!isPlayerOnTop)
-            {
+    public void onCollision(GameObject gameObject) {
+        if (gameObject.name == "player") {
+            if (!isPlayerOnTop) {
                 if (gameObject.velocity.y > 0)
                     enemy.velocity.y = 6;
                 isPlayerOnTop = true;
@@ -125,10 +104,13 @@ class FrozenEnemy implements Behavior
 }
 
 
-interface Behavior{
+interface Behavior {
     void init(Enemy enemy);
+
     void execute();
+
     void reset();
+
     void onCollision(GameObject gameObject)
 
 }
